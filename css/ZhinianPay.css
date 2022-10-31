@@ -1,0 +1,20 @@
+.zhinian_hide {
+    display: block;
+    background: grey;
+    padding: 15px 0;
+    text-align: center;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    line-height: normal;
+    opacity: 0.75;
+    color: white;
+}
+.zhinian_hide__button {
+    position: relative;
+    font-style: normal;
+    cursor: pointer;
+    color: blue;
+}
