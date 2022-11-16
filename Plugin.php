@@ -120,6 +120,8 @@ class ZhinianPay_Plugin implements Typecho_Plugin_Interface
         $mchId = $option->mchId;
         $mchKey = $option->mchKey;
         
+		
+		$dangmianfuAppid = $option->ffyd_zhifubaodangmianfu_appid;
         $alipay_appid = $option->alipay_appid;
         $app_private_key = $option->app_private_key;
         $alipay_public_key = $option->alipay_public_key;
@@ -135,10 +137,10 @@ class ZhinianPay_Plugin implements Typecho_Plugin_Interface
         $mazhifu_miyao = $option->ffyd_mazhifu_miyao;
         
         
-        $form = '<form style="display:none;" target="_blank" action="https://dy.zhinianboke.com/pay/zhifu/ZhiFu001/init" method="post" id="subscribe_form"><input type="hidden" name="qqNum" value="'.$qqNum.'"><input type="hidden" name="alipay" value="'.$alipay.'"><input type="hidden" name="wxpay" value="'.$wxpay.'"><input type="hidden" name="qqpay" value="'.$qqpay.'"><input type="hidden" name="appId" value="'.$appId.'"><input type="hidden" name="mchId" value="'.$mchId.'"><input type="hidden" name="mchKey" value="'.$mchKey.'"><input type="hidden" id="ZhinianPay_cardId" name="cardId" value="'.$cardId.'"><input type="hidden" id="ZhinianPay_cookietime" value="'.$cookietime.'"><input type="hidden" name="orderName" value="文章付费阅读"><input type="hidden" id="ZhinianPay_cookieName" value="'.$cookieName.'"><input type="hidden" id="ZhinianPay_bussId" name="bussId" value="'.$bussId.'"><input type="hidden" name="orderDes" value="文章付费阅读"><input type="hidden" name="alipayAppid" value="'.$alipay_appid.'"><input type="hidden" name="alipayAppPrivateKey" value="'.$app_private_key.'"><input type="hidden" name="alipayPublicKey" value="'.$alipay_public_key.'"><input type="hidden" id="ZhinianPay_orderFee" name="orderFee" value="'.$money.'"><input type="hidden" name="returnUrl" value="'.$returnUrl.'"><input type="hidden" name="interfUrl" value="'.$yizhif_interfUrl.'"><input type="hidden" name="pid" value="'.$yizhifu_pid.'"><input type="hidden" name="miyao" value="'.$yizhifu_miyao.'"><input type="hidden" name="mazhifuInterfUrl" value="'.$mazhifu_interfUrl.'"><input type="hidden" name="mazhifuPid" value="'.$mazhifu_pid.'"><input type="hidden" name="mazhifuMiyao" value="'.$mazhifu_miyao.'"><input type="submit" value="" id="submit"></form>';
+        $form = '<form style="display:none;" target="_blank" action="https://dy.zhinianboke.com/pay/zhifu/ZhiFu001/init" method="post" id="subscribe_form"><input type="hidden" name="qqNum" value="'.$qqNum.'"><input type="hidden" name="alipay" value="'.$alipay.'"><input type="hidden" name="wxpay" value="'.$wxpay.'"><input type="hidden" name="qqpay" value="'.$qqpay.'"><input type="hidden" name="appId" value="'.$appId.'"><input type="hidden" name="mchId" value="'.$mchId.'"><input type="hidden" name="mchKey" value="'.$mchKey.'"><input type="hidden" id="ZhinianPay_cardId" name="cardId" value="'.$cardId.'"><input type="hidden" id="ZhinianPay_cookietime" value="'.$cookietime.'"><input type="hidden" name="orderName" value="文章付费阅读"><input type="hidden" id="ZhinianPay_cookieName" value="'.$cookieName.'"><input type="hidden" id="ZhinianPay_bussId" name="bussId" value="'.$bussId.'"><input type="hidden" name="orderDes" value="文章付费阅读"><input type="hidden" name="dangmianfuAppid" value="'.$dangmianfuAppid.'"><input type="hidden" name="alipayAppid" value="'.$alipay_appid.'"><input type="hidden" name="alipayAppPrivateKey" value="'.$app_private_key.'"><input type="hidden" name="alipayPublicKey" value="'.$alipay_public_key.'"><input type="hidden" id="ZhinianPay_orderFee" name="orderFee" value="'.$money.'"><input type="hidden" name="returnUrl" value="'.$returnUrl.'"><input type="hidden" name="interfUrl" value="'.$yizhif_interfUrl.'"><input type="hidden" name="pid" value="'.$yizhifu_pid.'"><input type="hidden" name="miyao" value="'.$yizhifu_miyao.'"><input type="hidden" name="mazhifuInterfUrl" value="'.$mazhifu_interfUrl.'"><input type="hidden" name="mazhifuPid" value="'.$mazhifu_pid.'"><input type="hidden" name="mazhifuMiyao" value="'.$mazhifu_miyao.'"><input type="submit" value="" id="submit"></form>';
         
         $replaceEnd = '<div class="zhinianpay_content" style="display: none;">'.$hideContent.'</div>';
-        $replaceEnd = $replaceEnd . '<span class="zhinian_hide">此处内容作者设置了 <i class="zhinian_hide__button">付费'.$money . ' 元(点击此处支付，付费后请刷新界面) </i>可见，付费后 '. $cookietime . ' 天内有效</span>'.$form;
+        $replaceEnd = $replaceEnd . '<span id="zhinian_hide">此处内容作者设置了 <i id="zhinian_hide__button">付费'.$money . ' 元(点击此处支付，付费后请刷新界面) </i>可见，付费后 '. $cookietime . ' 天内有效</span>'.$form;
         $content = preg_replace('/{ZhinianPay[^}]*}([\s\S]*?){\/ZhinianPay}/', $replaceEnd, $content);
 		return $content;
     }
@@ -261,7 +263,10 @@ class ZhinianPay_Plugin implements Typecho_Plugin_Interface
         $form->addInput($teepay_cookietime);
         
         // alipay配置
-		$alipay_appid = new Typecho_Widget_Helper_Form_Element_Text('alipay_appid', array('value'), "", _t('支付宝appid'), _t('支付宝的appid号。'));
+		$ffyd_zhifubaodangmianfu_appid = new Typecho_Widget_Helper_Form_Element_Text('ffyd_zhifubaodangmianfu_appid', array('value'), "", _t('支付宝当面付appid'), _t('支付宝当面付的appid号。'));
+        $form->addInput($ffyd_zhifubaodangmianfu_appid);
+		
+		$alipay_appid = new Typecho_Widget_Helper_Form_Element_Text('alipay_appid', array('value'), "", _t('支付宝应用appid'), _t('支付宝应用的appid号。'));
         $form->addInput($alipay_appid);
         
 		$app_private_key = new Typecho_Widget_Helper_Form_Element_Textarea('app_private_key', array('value'), "", _t('支付宝应用私钥'), _t('应用私钥，不是支付宝私钥。'));

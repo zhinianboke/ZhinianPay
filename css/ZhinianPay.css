@@ -1,4 +1,4 @@
-.zhinian_hide {
+#zhinian_hide {
     display: block;
     background: grey;
     padding: 15px 0;
@@ -9,10 +9,9 @@
     -ms-user-select: none;
     user-select: none;
     line-height: normal;
-    opacity: 0.75;
     color: white;
 }
-.zhinian_hide__button {
+#zhinian_hide__button {
     position: relative;
     font-style: normal;
     cursor: pointer;
