@@ -516,7 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 	}
     
-    $(".zhinian_hide .zhinian_hide__button").click(function() {
+    $("#zhinian_hide #zhinian_hide__button").click(function() {
         var cookieValue = "";
         var strcookie = document.cookie;//获取cookie字符串
         var arrcookie = strcookie.split("; ");//分割
@@ -544,12 +544,12 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             success: function(data) {
                 if((data.status == '200' && data.data == 'success')) {
-                    $('.zhinianpay_content').show();
-                    $('.zhinian_hide').hide();
+                    $('#zhinianpay_content').show();
+                    $('#zhinian_hide').hide();
                 }
                 else {
-                    $('.zhinianpay_content').hide();
-                    $('.zhinian_hide').show();
+                    $('#zhinianpay_content').hide();
+                    $('#zhinian_hide').show();
                 }
             },
             error:function(response){
