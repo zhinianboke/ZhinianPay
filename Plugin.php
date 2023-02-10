@@ -41,21 +41,24 @@ class ZhinianPay_Plugin implements Typecho_Plugin_Interface
     {
     }
     
-    /**
-     * 插件实现方法
-     * 
-     * @access public
-     * @return void
-     */
-    public static function render($post)
+    
+    public static function encodeStr($tempStr)
     {
-        $jsUrl = Helper::options()->pluginUrl . '/ZhinianPay/js/ZhinianPay.js';
-        $loadJquery = Typecho_Widget::widget('Widget_Options')->plugin('ZhinianPay');
-        $result = '<script type="text/javascript" src="'. $jsUrl .'"></script>';
-        if($loadJquery == '01') {
-            $result = $result.'<script src="//cdn.staticfile.org/jquery/3.5.1/jquery.min.js"></script>';
+        $rsa_public = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC7eS21cl2VxEPmYBybLa0rakuVpA+XZjse3av1urKwNNJjg2N00Y/gyvGlVgMsMAkU6QmJNhXrJk6SDc7FhO8EKbbUSrSPDGSZb9/rutH+FKkKQca0jcwG9iHyPM58PANV38lOzJCQnrTVK+YlrRxXSyZQTkmUX3g8KM5q4Tg8AwIDAQAB';
+        $public_key = "-----BEGIN PUBLIC KEY-----\n" . wordwrap($rsa_public, 64, "\n", true) . "\n-----END PUBLIC KEY-----";
+        $key = openssl_pkey_get_public($public_key);
+        
+        if(empty($tempStr)) {
+            return $tempStr;
         }
-        echo $result;
+        $crypted = '';
+        foreach (str_split($tempStr, 117) as $chunk) {
+            openssl_public_encrypt($chunk, $encryptData, $key);
+            $crypted .= $encryptData;
+        }
+        $tempStr = base64_encode($crypted);
+        
+    	return $tempStr;
     }
     
     /**
@@ -122,63 +125,28 @@ class ZhinianPay_Plugin implements Typecho_Plugin_Interface
 		$cardId = $option->cardId;
 		
 		$dangmianfuAppid = $option->ffyd_zhifubaodangmianfu_appid;
-		$crypted = '';
-        foreach (str_split($dangmianfuAppid, 117) as $chunk) {
-            openssl_public_encrypt($chunk, $encryptData, $key);
-            $crypted .= $encryptData;
-        }
-        $dangmianfuAppid = base64_encode($crypted);
+        $dangmianfuAppid = self::encodeStr($dangmianfuAppid);
 		
         $alipay_appid = $option->alipay_appid;
-		$crypted = '';
-        foreach (str_split($alipay_appid, 117) as $chunk) {
-            openssl_public_encrypt($chunk, $encryptData, $key);
-            $crypted .= $encryptData;
-        }
-        $alipay_appid = base64_encode($crypted);
+        $alipay_appid = self::encodeStr($alipay_appid);
 		
         $app_private_key = $option->app_private_key;
-		$crypted = '';
-        foreach (str_split($app_private_key, 117) as $chunk) {
-            openssl_public_encrypt($chunk, $encryptData, $key);
-            $crypted .= $encryptData;
-        }
-        $app_private_key = base64_encode($crypted);
+        $app_private_key = self::encodeStr($app_private_key);
 		
         $alipay_public_key = $option->alipay_public_key;
-		$crypted = '';
-        foreach (str_split($alipay_public_key, 117) as $chunk) {
-            openssl_public_encrypt($chunk, $encryptData, $key);
-            $crypted .= $encryptData;
-        }
-        $alipay_public_key = base64_encode($crypted);
+        $alipay_public_key = self::encodeStr($alipay_public_key);
 		
 		
 		
 		
 		$appId = $option->appId;
-		$crypted = '';
-        foreach (str_split($appId, 117) as $chunk) {
-            openssl_public_encrypt($chunk, $encryptData, $key);
-            $crypted .= $encryptData;
-        }
-        $appId = base64_encode($crypted);
+        $appId = self::encodeStr($appId);
         
         $mchId = $option->mchId;
-		$crypted = '';
-        foreach (str_split($mchId, 117) as $chunk) {
-            openssl_public_encrypt($chunk, $encryptData, $key);
-            $crypted .= $encryptData;
-        }
-        $mchId = base64_encode($crypted);
+        $mchId = self::encodeStr($mchId);
         
         $mchKey = $option->mchKey;
-		$crypted = '';
-        foreach (str_split($mchKey, 117) as $chunk) {
-            openssl_public_encrypt($chunk, $encryptData, $key);
-            $crypted .= $encryptData;
-        }
-        $mchKey = base64_encode($crypted);
+        $mchKey = self::encodeStr($mchKey);
         
         
         
@@ -193,20 +161,10 @@ class ZhinianPay_Plugin implements Typecho_Plugin_Interface
         
         $yizhif_interfUrl = $option->ffyd_yizhifu_interfUrl;
         $yizhifu_pid = $option->ffyd_yizhifu_pid;
-		$crypted = '';
-        foreach (str_split($yizhifu_pid, 117) as $chunk) {
-            openssl_public_encrypt($chunk, $encryptData, $key);
-            $crypted .= $encryptData;
-        }
-        $yizhifu_pid = base64_encode($crypted);
+        $yizhifu_pid = self::encodeStr($yizhifu_pid);
         
         $yizhifu_miyao = $option->ffyd_yizhifu_miyao;
-		$crypted = '';
-        foreach (str_split($yizhifu_miyao, 117) as $chunk) {
-            openssl_public_encrypt($chunk, $encryptData, $key);
-            $crypted .= $encryptData;
-        }
-        $yizhifu_miyao = base64_encode($crypted);
+        $yizhifu_miyao = self::encodeStr($yizhifu_miyao);
         
         
         
@@ -214,20 +172,10 @@ class ZhinianPay_Plugin implements Typecho_Plugin_Interface
         
         $mazhifu_interfUrl = $option->ffyd_mazhifu_interfUrl;
         $mazhifu_pid = $option->ffyd_mazhifu_pid;
-		$crypted = '';
-        foreach (str_split($mazhifu_pid, 117) as $chunk) {
-            openssl_public_encrypt($chunk, $encryptData, $key);
-            $crypted .= $encryptData;
-        }
-        $mazhifu_pid = base64_encode($crypted);
+        $mazhifu_pid = self::encodeStr($mazhifu_pid);
         
         $mazhifu_miyao = $option->ffyd_mazhifu_miyao;
-		$crypted = '';
-        foreach (str_split($mazhifu_miyao, 117) as $chunk) {
-            openssl_public_encrypt($chunk, $encryptData, $key);
-            $crypted .= $encryptData;
-        }
-        $mazhifu_miyao = base64_encode($crypted);
+        $mazhifu_miyao = self::encodeStr($mazhifu_miyao);
         
         
         $form = '<form style="display:none;" target="_blank" action="https://dy.zhinianboke.com/pay/zhifu/ZhiFu001/init" method="post" id="subscribe_form"><input type="hidden" name="qqNum" value="'.$qqNum.'"><input type="hidden" name="alipay" value="'.$alipay.'"><input type="hidden" name="wxpay" value="'.$wxpay.'"><input type="hidden" name="qqpay" value="'.$qqpay.'"><input type="hidden" name="appId" value="'.$appId.'"><input type="hidden" name="mchId" value="'.$mchId.'"><input type="hidden" name="mchKey" value="'.$mchKey.'"><input type="hidden" id="ZhinianPay_cardId" name="cardId" value="'.$cardId.'"><input type="hidden" id="ZhinianPay_cookietime" value="'.$cookietime.'"><input type="hidden" name="orderName" value="文章付费阅读"><input type="hidden" id="ZhinianPay_cookieName" value="'.$cookieName.'"><input type="hidden" id="ZhinianPay_bussId" name="bussId" value="'.$bussId.'"><input type="hidden" name="orderDes" value="文章付费阅读"><input type="hidden" name="dangmianfuAppid" value="'.$dangmianfuAppid.'"><input type="hidden" name="alipayAppid" value="'.$alipay_appid.'"><input type="hidden" name="alipayAppPrivateKey" value="'.$app_private_key.'"><input type="hidden" name="alipayPublicKey" value="'.$alipay_public_key.'"><input type="hidden" id="ZhinianPay_orderFee" name="orderFee" value="'.$money.'"><input type="hidden" name="returnUrl" value="'.$returnUrl.'"><input type="hidden" name="interfUrl" value="'.$yizhif_interfUrl.'"><input type="hidden" name="pid" value="'.$yizhifu_pid.'"><input type="hidden" name="miyao" value="'.$yizhifu_miyao.'"><input type="hidden" name="mazhifuInterfUrl" value="'.$mazhifu_interfUrl.'"><input type="hidden" name="mazhifuPid" value="'.$mazhifu_pid.'"><input type="hidden" name="mazhifuMiyao" value="'.$mazhifu_miyao.'"><input type="hidden" name="encryption" value="01"><input type="submit" value="" id="submit"></form>';
@@ -441,4 +389,21 @@ class ZhinianPay_Plugin implements Typecho_Plugin_Interface
      * @return void
      */
     public static function personalConfig(Typecho_Widget_Helper_Form $form){}
+    
+    /**
+     * 插件实现方法
+     * 
+     * @access public
+     * @return void
+     */
+    public static function render($post)
+    {
+        $jsUrl = Helper::options()->pluginUrl . '/ZhinianPay/js/ZhinianPay.js';
+        $loadJquery = Typecho_Widget::widget('Widget_Options')->plugin('ZhinianPay');
+        $result = '<script type="text/javascript" src="'. $jsUrl .'"></script>';
+        if($loadJquery == '01') {
+            $result = $result.'<script src="//cdn.staticfile.org/jquery/3.5.1/jquery.min.js"></script>';
+        }
+        echo $result;
+    }
 }
