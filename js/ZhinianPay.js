@@ -516,7 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 	}
     
-    $("#zhinian_hide #zhinian_hide__button").click(function() {
+    $(".zhinian_hide .zhinian_hide__button").click(function() {
         var cookieValue = "";
         var strcookie = document.cookie;//获取cookie字符串
         var arrcookie = strcookie.split("; ");//分割
@@ -537,19 +537,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if($('#ZhinianPay_bussId').val()) {
         var cardId = $('#ZhinianPay_cardId').val();
         var bussId = $('#ZhinianPay_bussId').val();
+        var sign = $('#ZhinianPay_sign').val();
         $.ajax({
-            url: 'https://dy.' + 'zhinianboke.com' + '/api/getPayStatus?cardId=' + cardId + '&bussId=' + bussId,
-            type: 'GET',
+            url: 'https://dy.' + 'zhinianboke.com' + '/api/getPayStatus',
+            type: 'POST',
             data: {
+                "cardId":cardId,
+                "bussId":bussId,
+                "sign":sign,
+                "content":$('.zhinianpay_content').html()
             },
             success: function(data) {
-                if((data.status == '200' && data.data == 'success')) {
-                    $('#zhinianpay_content').show();
-                    $('#zhinian_hide').hide();
+                if((data.status == '200' && data.message == 'success')) {
+                    $('.zhinianpay_content').html(data.data.content);
+                    $('.zhinianpay_content').show();
+                    $('.zhinian_hide').hide();
                 }
                 else {
-                    $('#zhinianpay_content').hide();
-                    $('#zhinian_hide').show();
+                    $('.zhinianpay_content').hide();
+                    $('.zhinian_hide').show();
                 }
             },
             error:function(response){
